@@ -21,7 +21,7 @@ jobs:
       - name: Deploy app
         uses: dawidd6/action-ansible-playbook@v2.5.0
         with:
-          playbook: ansible/backend.yml
+          playbook: ansible/tiktok.yml
           key: ${{ secrets.GOMUSIC_SSH_PRIVATE_KEY }}
           inventory: |
             ${{ secrets.GOMUSIC_INVENTORY }}
