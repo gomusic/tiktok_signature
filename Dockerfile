@@ -1,17 +1,15 @@
-#tiktok-signature
-FROM ubuntu:bionic AS tiktok_signature.build
+# Result 904 MB
+FROM node:12.22.7-buster-slim
 
-WORKDIR /usr
+WORKDIR /app
 
-# 1. Install node12
-RUN apt-get update && apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g pm2
-
-
-# 2. Install WebKit dependencies
-RUN apt-get install -y libwoff1 \
+# Install WebKit dependencies
+RUN npm install -g pm2 \
+        && \
+    apt-get update \
+        && \
+    apt-get install -y \
+    libwoff1 \
     libopus0 \
     libwebp6 \
     libwebpdemux2 \
@@ -32,25 +30,22 @@ RUN apt-get install -y libwoff1 \
     libgstreamer-plugins-base1.0-0 \
     libgstreamer-plugins-bad1.0-0 \
     libharfbuzz-icu0 \
-    libopenjp2-7
-
-# 3. Install Chromium dependencies
-
-RUN apt-get install -y libnss3 \
+    libopenjp2-7 \
+# Install Chromium dependencies
+    libnss3 \
     libxss1 \
-    libasound2
+    libasound2 \
+# Install Firefox dependencies
+    libdbus-glib-1-2 \
+    libxt6 \
+        && \
+    apt-get clean
 
-# 4. Install Firefox dependencies
-
-RUN apt-get install -y libdbus-glib-1-2 \
-    libxt6
-
-# 5. Copying required files
-
-ADD package.json package.json
-ADD package-lock.json package-lock.json
+# Copying required files
+COPY package.json package.json
+COPY package-lock.json package-lock.json
 RUN npm i
-ADD . .
+COPY . .
 
 EXPOSE 8080
 CMD [ "pm2-runtime", "listen.js" ]

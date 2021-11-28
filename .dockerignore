@@ -12,8 +12,9 @@ README.md
 # Examples
 examples/
 
-# CI
+# CI/CD
 .github/
+ansible/
 
 # App
 .editorconfig
