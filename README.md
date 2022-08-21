@@ -1,3 +1,5 @@
+# tiktok-signature
+
 ![NPM](https://img.shields.io/npm/l/tiktok-signature.svg?style=for-the-badge) ![npm](https://img.shields.io/npm/v/tiktok-signature.svg?style=for-the-badge)
 
 ## Installation
