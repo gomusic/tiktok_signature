@@ -1,12 +1,11 @@
-const url = require("url");
+const { createCipheriv } = require("crypto");
 const { devices, chromium } = require("playwright-chromium");
 const Utils = require("./utils");
 const iPhone11 = devices["iPhone 11 Pro"];
 class Signer {
   userAgent =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (Windows NT 10.0; Win64; x64) Chrome/90.0.4430.85 Safari/537.36";
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36";
   args = [
-    "--headless",
     "--disable-blink-features",
     "--disable-blink-features=AutomationControlled",
     "--disable-infobars",
@@ -15,6 +14,9 @@ class Signer {
   ];
   // Default TikTok loading page
   default_url = "https://www.tiktok.com/@rihanna?lang=en";
+
+  // Password for xttparams AES encryption
+  password = "webapp1.0+202106";
 
   constructor(default_url, userAgent, browser) {
     if (default_url) {
@@ -32,6 +34,7 @@ class Signer {
     this.args.push(`--user-agent="${this.userAgent}"`);
 
     this.options = {
+      headless: true,
       args: this.args,
       ignoreDefaultArgs: ["--mute-audio", "--hide-scrollbars"],
       ignoreHTTPSErrors: true,
@@ -60,15 +63,22 @@ class Signer {
 
     this.page = await this.context.newPage();
 
-    await this.page.goto(this.default_url, {
-      waitUntil: "load",
+    await this.page.route("**/*", (route) => {
+      return route.request().resourceType() === "script"
+        ? route.abort()
+        : route.continue();
     });
 
-    let LOAD_SCRIPTS = ["signer.js", "xttparams.js"];
+    await this.page.goto(this.default_url, {
+      waitUntil: "networkidle",
+    });
+
+    let LOAD_SCRIPTS = ["signer.js", "webmssdk.js"];
     LOAD_SCRIPTS.forEach(async (script) => {
       await this.page.addScriptTag({
         path: `${__dirname}/javascript/${script}`,
       });
+      // console.log("[+] " + script + " loaded");
     });
 
     await this.page.evaluate(() => {
@@ -79,14 +89,14 @@ class Signer {
         return window.byted_acrawler.sign({ url: url });
       };
 
-      window.generateTTParams = function generateTTParams(queryObject) {
-        if (typeof window.genXTTParams !== "function") {
-          throw "No x-tt-params function found";
+      window.generateBogus = function generateBogus(params) {
+        if (typeof window._0x32d649 !== "function") {
+          throw "No X-Bogus function found";
         }
-        return window.genXTTParams(queryObject);
+        return window._0x32d649(params);
       };
+      return this;
     });
-    return this;
   }
 
   async navigator() {
@@ -105,31 +115,32 @@ class Signer {
   }
   async sign(link) {
     // generate valid verifyFp
-    // let csrf = await this.getCsrfSessionId();
     let verify_fp = Utils.generateVerifyFp();
     let newUrl = link + "&verifyFp=" + verify_fp;
     let token = await this.page.evaluate(`generateSignature("${newUrl}")`);
     let signed_url = newUrl + "&_signature=" + token;
-    let queryObject = url.parse(signed_url, true).query;
+    let queryString = new URL(signed_url).searchParams.toString();
+    let bogus = await this.page.evaluate(`generateBogus("${queryString}")`);
+    signed_url += "&X-Bogus=" + bogus;
+
+
     return {
       signature: token,
       verify_fp: verify_fp,
-      // csrf_session: csrf,
       signed_url: signed_url,
-      x_tt_params: await this.page.evaluate((queryObject) => {
-        return generateTTParams(queryObject);
-      }, queryObject),
+      "x-tt-params": this.xttparams(queryString),
+      "x-bogus": bogus,
     };
   }
 
-  async getCsrfSessionId() {
-    var content = await this.page.cookies();
-    for (let cookie of content) {
-      if (cookie.name == "csrf_session_id") {
-        return cookie.value;
-      }
-    }
-    return null;
+  xttparams(query_str) {
+    query_str += "&is_encryption=1";
+
+    // Encrypt query string using aes-128-cbc
+    const cipher = createCipheriv("aes-128-cbc", this.password, this.password);
+    return Buffer.concat([cipher.update(query_str), cipher.final()]).toString(
+      "base64"
+    );
   }
 
   async close() {

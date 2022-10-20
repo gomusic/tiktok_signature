@@ -1,6 +1,6 @@
 const Signer = require("./index");
 const http = require("http");
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 (async function main() {
   try {
     const signer = new Signer();
@@ -25,6 +25,7 @@ const PORT = process.env.PORT || 8080;
     signer.init();
 
     server.on("request", (request, response) => {
+      console.log('request', request)
       response.setHeader("Access-Control-Allow-Origin", "*");
       response.setHeader("Access-Control-Allow-Headers", "*");
 
@@ -50,11 +51,8 @@ const PORT = process.env.PORT || 8080;
             let output = JSON.stringify({
               status: "ok",
               data: {
-                signature: sign.signature,
-                verify_fp: sign.verify_fp,
-                signed_url: sign.signed_url,
+                ...sign,
                 navigator: navigator,
-                "x-tt-params": sign.x_tt_params,
               },
             });
             response.writeHead(200, { "Content-Type": "application/json" });
