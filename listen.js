@@ -72,7 +72,6 @@ curl -H "Content-type: application/x-www-form-urlencoded" \
           } catch (err) {
             response.writeHead(200, { "Content-Type": "application/json" });
             response.statusCode = 400;
-            signer.close()
             response.end(JSON.stringify({ error: err.toString() }));
             console.log(err);
             // Uncomment if you want to auto-exit this application when an error thrown
