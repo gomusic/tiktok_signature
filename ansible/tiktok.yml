@@ -9,49 +9,84 @@
     container_image: "{{ app_name }}:{{ app_version }}"
 
   tasks:
-    - name: "Git clone"
+    - name: "Git clone - main"
       ansible.builtin.git:
         repo: "https://github.com/gomusic/tiktok-signature"
-        dest: "{{ app_git_path }}"
+        dest: "/tmp/main"
         single_branch: yes
         version: "main"
 
-    - name: "Docker build"
-      become: true
-      community.docker.docker_image:
-        build:
-          path: "{{ app_git_path }}"
-        name: "{{ app_name }}"
-        tag: "{{ app_version }}"
-        source: "build"
+    - name: "Git clone - ci"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok-signature"
+        dest: "/tmp/ci"
+        single_branch: yes
+        version: "ci"
 
-    - name: "Delete git repository"
-      file:
-        path: "{{ app_git_path }}"
-        state: "absent"
+    - name: "Git clone - master"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok-signature"
+        dest: "/tmp/master"
+        single_branch: yes
+        version: "master"
 
-    - name: "Deploy app container"
-      become: true
-      community.docker.docker_container:
-        name: "{{ container_name }}"
-        hostname: "{{ container_name }}"
-        image: "{{ container_image }}"
-        state: "started"
-        restart_policy: "always"
-        networks:
-          - name: "{{ api_docker_network }}"
-            aliases:
-              - "{{ app_name }}"
-        log_driver: "json-file"
-        log_options:
-          max-size: "10m"
-          max-file: "3"
+    - name: "Debug: main"
+      shell: |
+        cd /tmp/main
+        git branch --show-current
+        ls -lah listen.js
+        tail -n 10 listen.js
 
-    - name: "Docker image clear"
-      become: true
-      community.docker.docker_prune:
-        containers: no
-        images: yes
-        networks: no
-        volumes: no
-        builder_cache: no
+    - name: "Debug: ci"
+      shell: |
+        cd /tmp/ci
+        git branch --show-current
+        ls -lah listen.js
+        tail -n 10 listen.js
+
+    - name: "Debug: master"
+      shell: |
+        cd /tmp/master
+        git branch --show-current
+        ls -lah listen.js
+        tail -n 10 listen.js
+
+    # - name: "Docker build"
+    #   become: true
+    #   community.docker.docker_image:
+    #     build:
+    #       path: "{{ app_git_path }}"
+    #     name: "{{ app_name }}"
+    #     tag: "{{ app_version }}"
+    #     source: "build"
+
+    # - name: "Delete git repository"
+    #   file:
+    #     path: "{{ app_git_path }}"
+    #     state: "absent"
+
+    # - name: "Deploy app container"
+    #   become: true
+    #   community.docker.docker_container:
+    #     name: "{{ container_name }}"
+    #     hostname: "{{ container_name }}"
+    #     image: "{{ container_image }}"
+    #     state: "started"
+    #     restart_policy: "always"
+    #     networks:
+    #       - name: "{{ api_docker_network }}"
+    #         aliases:
+    #           - "{{ app_name }}"
+    #     log_driver: "json-file"
+    #     log_options:
+    #       max-size: "10m"
+    #       max-file: "3"
+
+    # - name: "Docker image clear"
+    #   become: true
+    #   community.docker.docker_prune:
+    #     containers: no
+    #     images: yes
+    #     networks: no
+    #     volumes: no
+    #     builder_cache: no
