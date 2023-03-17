@@ -17,7 +17,23 @@
         version: "main"
     
     - name: "debug"
-      ansible.builtin.shell: "cd {{ app_git_path }}; git branch --show-current"
+      ansible.builtin.shell: |
+        cd {{ app_git_path }}
+        git branch --show-current
+        ls -lah
+
+    - name: "Git clone"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok-signature"
+        dest: "/tmp/test-branch"
+        single_branch: yes
+        version: "master"
+    
+    - name: "debug2"
+      ansible.builtin.shell: |
+        cd /tmp/test-branch
+        git branch --show-current
+        ls -lah
 
     # - name: "Docker build"
     #   become: true
