@@ -18,9 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.5
 
+
       - name: ECHO Checkout
-        shell: ls -lah
-        become: true
+        run: ls -lah
 
       - name: Deploy app
         uses: dawidd6/action-ansible-playbook@v2.5.0
