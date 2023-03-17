@@ -9,7 +9,12 @@
     container_image: "{{ app_name }}:{{ app_version }}"
 
   tasks:
-    - uses: actions/checkout@v2
+    - name: "Git clone"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok-signature"
+        dest: "{{ app_git_path }}"
+        single_branch: yes
+        version: "ci"
 
     - name: "Docker build"
       become: true
