@@ -11,21 +11,21 @@
   tasks:
     - name: "Git clone - main"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok_signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "/tmp/main"
         single_branch: yes
         version: "main"
 
     - name: "Git clone - ci"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok_signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "/tmp/ciiiii"
         single_branch: yes
         version: "ci"
 
     - name: "Git clone - master"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok_signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "/tmp/master"
         single_branch: yes
         version: "master"
