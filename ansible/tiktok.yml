@@ -9,7 +9,7 @@
     container_image: "{{ app_name }}:{{ app_version }}"
 
   tasks:
-    - name: "Git clone"
+    - name: "Git clone main"
       ansible.builtin.git:
         repo: "https://github.com/gomusic/tiktok_signature"
         dest: "{{ app_git_path }}"
