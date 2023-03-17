@@ -18,6 +18,19 @@
       shell: pwd
       become: true
 
+
+    - name: "Git clone"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok-signature"
+        dest: "{{ app_git_path }}"
+        single_branch: yes
+        version: "ci"
+
+
+    - name: ECHO
+      shell: cat {{ app_git_path }}/listen.js
+      become: true
+
     - name: "Docker build"
       become: true
       community.docker.docker_image:
