@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - test-2
   pull_request:
     branches:
-      - main
+      - test-2
 
 env:
   API_DOCKER_NETWORK: gm_backend_network
