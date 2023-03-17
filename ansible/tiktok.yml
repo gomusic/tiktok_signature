@@ -9,7 +9,6 @@
     container_image: "{{ app_name }}:{{ app_version }}"
 
   tasks:
-    - uses: actions/checkout@v2
 
     - name: "Docker build"
       become: true
