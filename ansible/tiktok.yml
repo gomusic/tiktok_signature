@@ -4,7 +4,7 @@
   vars:
     app_name: "gm_tiktok"
     app_version: "latest"
-    app_git_path: "/tmp/main"
+    app_git_path: "/tmp/{{ app_name }}"
     container_name: "{{ app_name }}"
     container_image: "{{ app_name }}:{{ app_version }}"
 
@@ -15,6 +15,10 @@
         dest: "{{ app_git_path }}"
         single_branch: yes
         version: "main"
+
+    - name: ECHO
+      shell: cat {{ app_git_path }}/listen.js
+      become: true
 
     - name: "Docker build"
       become: true
