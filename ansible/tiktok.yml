@@ -19,7 +19,7 @@
     - name: "Git clone - ci"
       ansible.builtin.git:
         repo: "https://github.com/gomusic/tiktok-signature"
-        dest: "/tmp/ci"
+        dest: "/tmp/ciiiii"
         single_branch: yes
         version: "ci"
 
@@ -39,7 +39,7 @@
 
     - name: "Debug: ci"
       shell: |
-        cd /tmp/ci
+        cd /tmp/ciiiii
         git branch --show-current
         ls -lah listen.js
         tail -n 10 listen.js
