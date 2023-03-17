@@ -26,7 +26,7 @@
         single_branch: yes
         force: yes
         version: ci
-        refspec: '++refs/heads/ci:refs/remotes/origin/ci'
+        refspec: '+refs/heads/ci:refs/remotes/origin/ci'
 
 
     - name: ECHO
