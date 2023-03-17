@@ -11,47 +11,68 @@
   tasks:
     - name: "Git clone"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok-signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "{{ app_git_path }}"
         single_branch: yes
         version: "main"
+    
+    - name: "debug"
+      ansible.builtin.shell: |
+        cd {{ app_git_path }}
+        git branch --show-current
+        ls -lah
+        tail -n 10 listen.js
 
-    - name: "Docker build"
-      become: true
-      community.docker.docker_image:
-        build:
-          path: "{{ app_git_path }}"
-        name: "{{ app_name }}"
-        tag: "{{ app_version }}"
-        source: "build"
+    - name: "Git clone2"
+      ansible.builtin.git:
+        repo: "https://github.com/gomusic/tiktok_signature.git"
+        dest: "/tmp/test-branch"
+        single_branch: yes
+        version: "master"
+    
+    - name: "debug2"
+      ansible.builtin.shell: |
+        cd /tmp/test-branch
+        git branch --show-current
+        ls -lah
+        tail -n 10 listen.js
 
-    - name: "Delete git repository"
-      file:
-        path: "{{ app_git_path }}"
-        state: "absent"
+    # - name: "Docker build"
+    #   become: true
+    #   community.docker.docker_image:
+    #     build:
+    #       path: "{{ app_git_path }}"
+    #     name: "{{ app_name }}"
+    #     tag: "{{ app_version }}"
+    #     source: "build"
 
-    - name: "Deploy app container"
-      become: true
-      community.docker.docker_container:
-        name: "{{ container_name }}"
-        hostname: "{{ container_name }}"
-        image: "{{ container_image }}"
-        state: "started"
-        restart_policy: "always"
-        networks:
-          - name: "{{ api_docker_network }}"
-            aliases:
-              - "{{ app_name }}"
-        log_driver: "json-file"
-        log_options:
-          max-size: "10m"
-          max-file: "3"
+    # - name: "Delete git repository"
+    #   file:
+    #     path: "{{ app_git_path }}"
+    #     state: "absent"
 
-    - name: "Docker image clear"
-      become: true
-      community.docker.docker_prune:
-        containers: no
-        images: yes
-        networks: no
-        volumes: no
-        builder_cache: no
+    # - name: "Deploy app container"
+    #   become: true
+    #   community.docker.docker_container:
+    #     name: "{{ container_name }}"
+    #     hostname: "{{ container_name }}"
+    #     image: "{{ container_image }}"
+    #     state: "started"
+    #     restart_policy: "always"
+    #     networks:
+    #       - name: "{{ api_docker_network }}"
+    #         aliases:
+    #           - "{{ app_name }}"
+    #     log_driver: "json-file"
+    #     log_options:
+    #       max-size: "10m"
+    #       max-file: "3"
+
+    # - name: "Docker image clear"
+    #   become: true
+    #   community.docker.docker_prune:
+    #     containers: no
+    #     images: yes
+    #     networks: no
+    #     volumes: no
+    #     builder_cache: no
