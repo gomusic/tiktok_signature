@@ -11,6 +11,7 @@
   tasks:
     - name: "Git clone"
       ansible.builtin.git:
+        update: true
         repo: "https://github.com/gomusic/tiktok-signature"
         dest: "{{ app_git_path }}"
         single_branch: yes
