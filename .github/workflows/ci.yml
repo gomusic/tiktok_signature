@@ -29,8 +29,6 @@ jobs:
             --inventory ansible/inventory
             --extra-vars ansible_ssh_port=${{ secrets.GOMUSIC_SSH_PORT }}
             --extra-vars ansible_ssh_user=${{ secrets.GOMUSIC_SSH_USER }}
-            --extra-vars ansible_become_user=${{ secrets.GOMUSIC_ANSIBLE_BECOME_USER }}
-            --extra-vars ansible_become_password=${{ secrets.GOMUSIC_ANSIBLE_BECOME_PASSWORD }}
             --extra-vars api_docker_network=${{ env.API_DOCKER_NETWORK }}
             --diff
             --verbose
