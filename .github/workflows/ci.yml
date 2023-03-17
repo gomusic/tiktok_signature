@@ -25,6 +25,9 @@ jobs:
       - name: ECHO Checkout
         run: pwd
 
+      - name: Extract branch name
+        run: echo ${GITHUB_REF##*/}
+
       - name: Deploy app
         uses: dawidd6/action-ansible-playbook@v2.5.0
         with:
