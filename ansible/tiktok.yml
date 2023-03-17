@@ -25,7 +25,8 @@
         dest: "{{ app_git_path }}"
         single_branch: yes
         force: yes
-        refspec: 'refs/heads/ci'
+        version: ci
+        refspec: '+refs/*:refs/remotes/origin/*'
 
 
     - name: ECHO
