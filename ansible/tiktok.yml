@@ -20,8 +20,8 @@
       ansible.builtin.git:
         repo: "https://github.com/gomusic/tiktok-signature"
         dest: "/tmp/ciiiii"
-        single_branch: yes
-        version: "origin/ci"
+        single_branch: false
+        version: "ci"
 
     - name: "Git clone - master"
       ansible.builtin.git:
