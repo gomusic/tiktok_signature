@@ -22,7 +22,7 @@
         git branch --show-current
         ls -lah
 
-    - name: "Git clone"
+    - name: "Git clone2"
       ansible.builtin.git:
         repo: "https://github.com/gomusic/tiktok-signature"
         dest: "/tmp/test-branch"
