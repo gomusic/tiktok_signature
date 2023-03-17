@@ -4,7 +4,7 @@
   vars:
     app_name: "gm_tiktok"
     app_version: "latest"
-    app_git_path: "/tmp/{{ app_name }}"
+    app_git_path: "/tmp/main"
     container_name: "{{ app_name }}"
     container_image: "{{ app_name }}:{{ app_version }}"
 
