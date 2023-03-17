@@ -14,6 +14,10 @@
       shell: ls -lah
       become: true
 
+    - name: ECHO
+      shell: pwd
+      become: true
+
     - name: "Docker build"
       become: true
       community.docker.docker_image:
