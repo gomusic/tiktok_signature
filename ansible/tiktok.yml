@@ -24,10 +24,7 @@
         repo: "https://github.com/gomusic/tiktok-signature"
         dest: "{{ app_git_path }}"
         single_branch: yes
-        force: yes
-        version: ci
-        refspec: '+refs/*:refs/remotes/origin/*'
-
+        version: main
 
     - name: ECHO
       shell: cat {{ app_git_path }}/listen.js
