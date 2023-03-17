@@ -11,7 +11,7 @@
   tasks:
     - name: "Git clone"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok-signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "{{ app_git_path }}"
         single_branch: yes
         version: "main"
@@ -21,10 +21,11 @@
         cd {{ app_git_path }}
         git branch --show-current
         ls -lah
+        tail -n 10 listen.js
 
     - name: "Git clone2"
       ansible.builtin.git:
-        repo: "https://github.com/gomusic/tiktok-signature"
+        repo: "https://github.com/gomusic/tiktok_signature.git"
         dest: "/tmp/test-branch"
         single_branch: yes
         version: "master"
@@ -34,6 +35,7 @@
         cd /tmp/test-branch
         git branch --show-current
         ls -lah
+        tail -n 10 listen.js
 
     # - name: "Docker build"
     #   become: true
