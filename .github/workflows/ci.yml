@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - ci
+  pull_request:
+    branches:
+      - ci
+
+env:
+  API_DOCKER_NETWORK: gm_backend_network
+
+jobs:
+  tiktok_deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.5
+
+      - name: Deploy app
+        uses: dawidd6/action-ansible-playbook@v2.5.0
+        with:
+          playbook: ansible/tiktok.yml
+          key: ${{ secrets.GOMUSIC_SSH_PRIVATE_KEY }}
+          inventory: |
+            ${{ secrets.GOMUSIC_INVENTORY }}
+          options: |
+            --inventory ansible/inventory
+            --extra-vars ansible_ssh_port=${{ secrets.GOMUSIC_SSH_PORT }}
+            --extra-vars ansible_ssh_user=${{ secrets.GOMUSIC_SSH_USER }}
+            --extra-vars api_docker_network=${{ env.API_DOCKER_NETWORK }}
+            --diff
+            --verbose
+        env:
+          ANSIBLE_CONFIG: ansible/ansible.cfg
