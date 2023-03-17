@@ -1,6 +1,17 @@
 const Signer = require("./index");
 const http = require("http");
 const PORT = process.env.PORT || 8080;
+
+/*
+curl -H "Content-type: application/x-www-form-urlencoded" \
+     -d "title=foo" \
+     -d "body=bar" \
+     -d "id=1" \
+     -X POST \
+     http://127.0.0.1:8080/signature
+
+ */
+
 (async function main() {
   try {
     const signer = new Signer();
@@ -59,6 +70,10 @@ const PORT = process.env.PORT || 8080;
             response.end(output);
             console.log(output);
           } catch (err) {
+            response.writeHead(200, { "Content-Type": "application/json" });
+            response.statusCode = 400;
+            signer.close()
+            response.end(JSON.stringify({ error: err.toString() }));
             console.log(err);
             // Uncomment if you want to auto-exit this application when an error thrown
             // If you use PM2 or Supervisord, it will attempt to open it
