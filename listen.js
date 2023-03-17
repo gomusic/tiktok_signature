@@ -58,6 +58,10 @@ const PORT = process.env.PORT || 8080;
             response.end(output);
             console.log(output);
           } catch (err) {
+            response.writeHead(200, { "Content-Type": "application/json" });
+            response.statusCode = 400;
+            response.end(JSON.stringify({ error: err.toString() }));
+            console.log(err);
             console.log(err);
             // Uncomment if you want to auto-exit this application when an error thrown
             // If you use PM2 or Supervisord, it will attempt to open it
