@@ -24,6 +24,8 @@
         repo: "https://github.com/gomusic/tiktok-signature"
         dest: "{{ app_git_path }}"
         single_branch: yes
+        force: yes
+        version: ci
 
 
     - name: ECHO
